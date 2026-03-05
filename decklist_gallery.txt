@@ -1,0 +1,75 @@
+# Special Art Gallery — every fancy version of the Loyal Three deck
+# Cleaned: removed unrelated cards (Arven's Greedent etc.), deduped
+
+# === OKIDOGI EX ===
+SFA 082 x1  # Ultra Rare (Shrouded Fable)
+SFA 090 x1  # Special illustration rare (Shrouded Fable)
+
+# === PECHARUNT EX ===
+SFA 085 x1  # Ultra Rare (Shrouded Fable)
+SFA 093 x1  # Special illustration rare (Shrouded Fable)
+SFA 095 x1  # Hyper rare (Shrouded Fable)
+PRE 163 x1  # Special illustration rare (Prismatic Evolutions)
+
+# === MUNKIDORI EX ===
+SFA 083 x1  # Ultra Rare (Shrouded Fable)
+SFA 091 x1  # Special illustration rare (Shrouded Fable)
+
+# === MUNKIDORI ===
+SFA 072 x1  # Illustration rare (Shrouded Fable)
+
+# === FEZANDIPITI EX ===
+SFA 084 x1  # Ultra Rare (Shrouded Fable)
+SFA 092 x1  # Special illustration rare (Shrouded Fable)
+
+# === MORPEKO ===
+PAR 206 x1  # Illustration rare (Paradox Rift)
+
+# === SQUAWKABILLY EX ===
+PAL 247 x1  # Ultra Rare (Paldea Evolved)
+PAL 264 x1  # Special illustration rare (Paldea Evolved)
+PAF 223 x1  # Shiny Ultra Rare (Paldean Fates)
+
+# === JANINE'S SECRET TECHNIQUE ===
+SFA 088 x1  # Ultra Rare (Shrouded Fable)
+PRE 173 x1  # Special illustration rare (Prismatic Evolutions)
+
+# === IONO ===
+PAL 254 x1  # Ultra Rare (Paldea Evolved)
+PAL 269 x1  # Special illustration rare (Paldea Evolved)
+PAF 237 x1  # Special illustration rare (Paldean Fates)
+
+# === PROFESSOR'S RESEARCH ===
+SVI 240 x1  # Ultra Rare — Prof. Sada (Scarlet & Violet)
+SVI 241 x1  # Ultra Rare — Prof. Turo (Scarlet & Violet)
+
+# === BOSS'S ORDERS ===
+PAL 248 x1  # Ultra Rare (Paldea Evolved)
+PAL 265 x1  # Special illustration rare (Paldea Evolved)
+
+# === ARVEN ===
+SVI 235 x1  # Ultra Rare (Scarlet & Violet)
+SVI 249 x1  # Special illustration rare (Scarlet & Violet)
+PAF 235 x1  # Special illustration rare (Paldean Fates)
+
+# === CHARIZARD EX (not in deck, but cmon) ===
+MEW 183 x1  # Ultra Rare (151)
+MEW 199 x1  # Special illustration rare (151)
+OBF 215 x1  # Ultra Rare (Obsidian Flames)
+OBF 223 x1  # Special illustration rare (Obsidian Flames)
+OBF 228 x1  # Hyper rare (Obsidian Flames)
+PAF 234 x1  # Special illustration rare (Paldean Fates)
+
+# === GARDEVOIR EX ===
+SVI 228 x1  # Ultra Rare (Scarlet & Violet)
+SVI 245 x1  # Special illustration rare (Scarlet & Violet)
+PAF 217 x1  # Shiny Ultra Rare (Paldean Fates)
+PAF 233 x1  # Special illustration rare (Paldean Fates)
+
+# === GOLD ITEMS ===
+SVI 255 x1  # Nest Ball — Hyper rare (Scarlet & Violet)
+PAL 276 x1  # Super Rod — Hyper rare (Paldea Evolved)
+SSP 251 x1  # Night Stretcher — Hyper rare (Surging Sparks)
+SCR 175 x1  # Bravery Charm — Hyper rare (Stellar Crown)
+MEW 206 x1  # Switch — Hyper rare (151)
+SFA 096 x1  # Earthen Vessel — Hyper rare (Shrouded Fable)

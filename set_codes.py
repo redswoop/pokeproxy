@@ -1,0 +1,21 @@
+# Maps PTCGL-style set codes to TCGdex set IDs
+SET_MAP = {
+    "SVI": "sv01",
+    "SV": "sv01",
+    "PAL": "sv02",
+    "OBF": "sv03",
+    "MEW": "sv03.5",
+    "PAR": "sv04",
+    "SV4": "sv04",
+    "PAF": "sv04.5",
+    "TEF": "sv05",
+    "TWM": "sv06",
+    "SFA": "sv06.5",
+    "SCR": "sv07",
+    "SSP": "sv08",
+    "PRE": "sv08.5",
+    "JTG": "sv09",
+    "DRI": "sv10",
+    "SVP": "svp",
+    "SVE": "sve",
+}

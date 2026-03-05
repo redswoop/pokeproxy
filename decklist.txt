@@ -1,0 +1,37 @@
+# Loyal Three + Pecharunt Deck (60 cards)
+
+# === POKEMON (11) ===
+SFA 36  x3  # Okidogi ex
+SFA 39  x2  # Pecharunt ex
+SFA 37  x2  # Munkidori ex
+TWM 95  x1  # Munkidori
+SFA 38  x1  # Fezandipiti ex
+SV4 121 x1  # Morpeko
+PAF 75  x1  # Squawkabilly ex
+
+# === SUPPORTERS (12) ===
+SFA 59  x4  # Janine's Secret Technique
+PAF 80  x3  # Iono
+PAF 88  x3  # Professor's Research
+PAL 172 x2  # Boss's Orders
+
+# === ITEMS (25) ===
+PAF 91  x4  # Ultra Ball
+PAF 84  x4  # Nest Ball
+SFA 55  x3  # Binding Mochi
+SVI 186 x3  # PokeGear 3.0
+PAR 163 x2  # Earthen Vessel
+SVI 173 x2  # Energy Switch
+SFA 61  x1  # Night Stretcher
+PAL 188 x1  # Super Rod
+SVI 182 x1  # Pal Pad
+PAL 173 x1  # Bravery Charm
+TWM 163 x1  # Secret Box (ACE SPEC)
+SVI 194 x1  # Switch
+SVI 187 x1  # Pokemon Catcher
+
+# === STADIUM (1) ===
+OBF 196 x1  # Town Store
+
+# === ENERGY (11) ===
+# SVE 7   x11  # Basic Darkness Energy — skipping, no proxy needed

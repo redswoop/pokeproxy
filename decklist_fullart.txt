@@ -1,0 +1,13 @@
+# Full-art test cards
+
+# Trainer - Supporter (Special illustration rare)
+PAF 237 x1  # Iono (full art)
+
+# Pokemon ex (Special illustration rare)
+PAF 234 x1  # Charizard ex (full art)
+
+# Pokemon ex (another SIR)
+PAF 233 x1  # Gardevoir ex (full art)
+
+# Trainer - Supporter
+PAF 235 x1  # Arven (full art)
