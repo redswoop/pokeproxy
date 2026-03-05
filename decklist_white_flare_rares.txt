@@ -1,0 +1,117 @@
+# White Flare (sv10.5w) — All Rares and Above
+# 103 cards total
+
+# === RARE (10) ===
+WFL 010 x1  # Virizion
+WFL 013 x1  # Emboar
+WFL 018 x1  # Chandelure
+WFL 023 x1  # Samurott
+WFL 040 x1  # Cofagrigus
+WFL 043 x1  # Gothitelle
+WFL 051 x1  # Archeops
+WFL 054 x1  # Terrakion
+WFL 062 x1  # Zoroark
+WFL 078 x1  # Tornadus
+
+# === DOUBLE RARE (6) ===
+WFL 005 x1  # Whimsicott ex
+WFL 020 x1  # Reshiram ex
+WFL 030 x1  # Keldeo ex
+WFL 045 x1  # Jellicent ex
+WFL 067 x1  # Hydreigon ex
+WFL 077 x1  # Bouffalant ex
+
+# === ILLUSTRATION RARE (70) ===
+WFL 087 x1  # Sewaddle
+WFL 088 x1  # Swadloon
+WFL 089 x1  # Leavanny
+WFL 090 x1  # Cottonee
+WFL 091 x1  # Deerling
+WFL 092 x1  # Sawsbuck
+WFL 093 x1  # Shelmet
+WFL 094 x1  # Accelgor
+WFL 095 x1  # Virizion
+WFL 096 x1  # Tepig
+WFL 097 x1  # Pignite
+WFL 098 x1  # Emboar
+WFL 099 x1  # Pansear
+WFL 100 x1  # Simisear
+WFL 101 x1  # Litwick
+WFL 102 x1  # Lampent
+WFL 103 x1  # Chandelure
+WFL 104 x1  # Heatmor
+WFL 105 x1  # Oshawott
+WFL 106 x1  # Dewott
+WFL 107 x1  # Samurott
+WFL 108 x1  # Basculin
+WFL 109 x1  # Ducklett
+WFL 110 x1  # Swanna
+WFL 111 x1  # Vanillite
+WFL 112 x1  # Vanillish
+WFL 113 x1  # Vanilluxe
+WFL 114 x1  # Blitzle
+WFL 115 x1  # Zebstrika
+WFL 116 x1  # Joltik
+WFL 117 x1  # Galvantula
+WFL 118 x1  # Stunfisk
+WFL 119 x1  # Woobat
+WFL 120 x1  # Swoobat
+WFL 121 x1  # Sigilyph
+WFL 122 x1  # Yamask
+WFL 123 x1  # Cofagrigus
+WFL 124 x1  # Gothita
+WFL 125 x1  # Gothorita
+WFL 126 x1  # Frillish
+WFL 127 x1  # Roggenrola
+WFL 128 x1  # Boldore
+WFL 129 x1  # Gigalith
+WFL 130 x1  # Sawk
+WFL 131 x1  # Archen
+WFL 132 x1  # Archeops
+WFL 133 x1  # Mienfoo
+WFL 134 x1  # Mienshao
+WFL 135 x1  # Terrakion
+WFL 136 x1  # Purrloin
+WFL 137 x1  # Liepard
+WFL 138 x1  # Scraggy
+WFL 139 x1  # Scrafty
+WFL 140 x1  # Trubbish
+WFL 141 x1  # Garbodor
+WFL 142 x1  # Zorua
+WFL 143 x1  # Zoroark
+WFL 144 x1  # Vullaby
+WFL 145 x1  # Mandibuzz
+WFL 146 x1  # Deino
+WFL 147 x1  # Zweilous
+WFL 148 x1  # Ferroseed
+WFL 149 x1  # Ferrothorn
+WFL 150 x1  # Durant
+WFL 151 x1  # Druddigon
+WFL 152 x1  # Patrat
+WFL 153 x1  # Watchog
+WFL 154 x1  # Lillipup
+WFL 155 x1  # Herdier
+WFL 156 x1  # Stoutland
+
+# === ULTRA RARE (8) ===
+WFL 157 x1  # Whimsicott ex
+WFL 158 x1  # Reshiram ex
+WFL 159 x1  # Keldeo ex
+WFL 160 x1  # Jellicent ex
+WFL 161 x1  # Hydreigon ex
+WFL 162 x1  # Bouffalant ex
+WFL 163 x1  # Harlequin
+WFL 164 x1  # Hilda
+
+# === SPECIAL ILLUSTRATION RARE (7) ===
+WFL 165 x1  # Whimsicott ex
+WFL 166 x1  # Reshiram ex
+WFL 167 x1  # Keldeo ex
+WFL 168 x1  # Jellicent ex
+WFL 169 x1  # Hydreigon ex
+WFL 170 x1  # Bouffalant ex
+WFL 171 x1  # Hilda
+
+# === BLACK WHITE RARE (2) ===
+WFL 172 x1  # Victini
+WFL 173 x1  # Reshiram ex

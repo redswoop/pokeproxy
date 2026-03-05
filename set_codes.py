@@ -16,6 +16,8 @@ SET_MAP = {
     "PRE": "sv08.5",
     "JTG": "sv09",
     "DRI": "sv10",
+    "WFL": "sv10.5w",
+    "BBT": "sv10.5b",
     "SVP": "svp",
     "SVE": "sve",
 }

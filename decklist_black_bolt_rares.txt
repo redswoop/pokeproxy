@@ -1,0 +1,116 @@
+# Black Bolt (sv10.5b) — All Rares and Above
+# 102 cards total
+
+# === RARE (10) ===
+BBT 012 x1  # Victini
+BBT 016 x1  # Volcarona
+BBT 023 x1  # Carracosta
+BBT 026 x1  # Beartic
+BBT 033 x1  # Thundurus
+BBT 049 x1  # Conkeldurr
+BBT 053 x1  # Landorus
+BBT 063 x1  # Klinklang
+BBT 066 x1  # Cobalion
+BBT 070 x1  # Haxorus
+
+# === DOUBLE RARE (6) ===
+BBT 003 x1  # Serperior ex
+BBT 028 x1  # Kyurem ex
+BBT 034 x1  # Zekrom ex
+BBT 044 x1  # Meloetta ex
+BBT 046 x1  # Excadrill ex
+BBT 067 x1  # Genesect ex
+
+# === ILLUSTRATION RARE (69) ===
+BBT 087 x1  # Snivy
+BBT 088 x1  # Servine
+BBT 089 x1  # Pansage
+BBT 090 x1  # Simisage
+BBT 091 x1  # Petilil
+BBT 092 x1  # Lilligant
+BBT 093 x1  # Maractus
+BBT 094 x1  # Karrablast
+BBT 095 x1  # Foongus
+BBT 096 x1  # Amoonguss
+BBT 097 x1  # Darumaka
+BBT 098 x1  # Darmanitan
+BBT 099 x1  # Larvesta
+BBT 100 x1  # Volcarona
+BBT 101 x1  # Panpour
+BBT 102 x1  # Simipour
+BBT 103 x1  # Tympole
+BBT 104 x1  # Palpitoad
+BBT 105 x1  # Seismitoad
+BBT 106 x1  # Tirtouga
+BBT 107 x1  # Carracosta
+BBT 108 x1  # Alomomola
+BBT 109 x1  # Cubchoo
+BBT 110 x1  # Beartic
+BBT 111 x1  # Cryogonal
+BBT 112 x1  # Emolga
+BBT 113 x1  # Tynamo
+BBT 114 x1  # Eelektrik
+BBT 115 x1  # Eelektross
+BBT 116 x1  # Munna
+BBT 117 x1  # Musharna
+BBT 118 x1  # Solosis
+BBT 119 x1  # Duosion
+BBT 120 x1  # Elgyem
+BBT 121 x1  # Beheeyem
+BBT 122 x1  # Golett
+BBT 123 x1  # Golurk
+BBT 124 x1  # Drilbur
+BBT 125 x1  # Timburr
+BBT 126 x1  # Gurdurr
+BBT 127 x1  # Conkeldurr
+BBT 128 x1  # Throh
+BBT 129 x1  # Dwebble
+BBT 130 x1  # Crustle
+BBT 131 x1  # Landorus
+BBT 132 x1  # Venipede
+BBT 133 x1  # Whirlipede
+BBT 134 x1  # Scolipede
+BBT 135 x1  # Sandile
+BBT 136 x1  # Krokorok
+BBT 137 x1  # Krookodile
+BBT 138 x1  # Escavalier
+BBT 139 x1  # Klink
+BBT 140 x1  # Klang
+BBT 141 x1  # Klinklang
+BBT 142 x1  # Pawniard
+BBT 143 x1  # Bisharp
+BBT 144 x1  # Cobalion
+BBT 145 x1  # Axew
+BBT 146 x1  # Fraxure
+BBT 147 x1  # Haxorus
+BBT 148 x1  # Pidove
+BBT 149 x1  # Tranquill
+BBT 150 x1  # Unfezant
+BBT 151 x1  # Audino
+BBT 152 x1  # Minccino
+BBT 153 x1  # Cinccino
+BBT 154 x1  # Rufflet
+BBT 155 x1  # Braviary
+
+# === ULTRA RARE (8) ===
+BBT 156 x1  # Serperior ex
+BBT 157 x1  # Kyurem ex
+BBT 158 x1  # Zekrom ex
+BBT 159 x1  # Meloetta ex
+BBT 160 x1  # Excadrill ex
+BBT 161 x1  # Genesect ex
+BBT 162 x1  # Fennel
+BBT 163 x1  # N's Plan
+
+# === SPECIAL ILLUSTRATION RARE (7) ===
+BBT 164 x1  # Serperior ex
+BBT 165 x1  # Kyurem ex
+BBT 166 x1  # Zekrom ex
+BBT 167 x1  # Meloetta ex
+BBT 168 x1  # Excadrill ex
+BBT 169 x1  # Genesect ex
+BBT 170 x1  # N's Plan
+
+# === BLACK WHITE RARE (2) ===
+BBT 171 x1  # Victini
+BBT 172 x1  # Zekrom ex

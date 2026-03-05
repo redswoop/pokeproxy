@@ -1,0 +1,112 @@
+# Destined Rivals (sv10) — All Rares and Above
+# 97 cards total
+
+# === RARE (21) ===
+DRI 008 x1  # Cynthia's Roserade
+DRI 012 x1  # Crustle
+DRI 018 x1  # Hydrapple
+DRI 020 x1  # Team Rocket's Spidops
+DRI 034 x1  # Ethan's Typhlosion
+DRI 036 x1  # Ethan's Magcargo
+DRI 042 x1  # Blaziken
+DRI 049 x1  # Misty's Gyarados
+DRI 051 x1  # Team Rocket's Articuno
+DRI 056 x1  # Gorebyss
+DRI 070 x1  # Team Rocket's Zapdos
+DRI 078 x1  # Zeraora
+DRI 082 x1  # Team Rocket's Wobbuffet
+DRI 092 x1  # Annihilape
+DRI 096 x1  # Team Rocket's Tyranitar
+DRI 128 x1  # Team Rocket's Sneasel
+DRI 146 x1  # Zamazenta
+DRI 150 x1  # Team Rocket's Persian ex (Double rare)
+DRI 159 x1  # Arven's Greedent
+
+# === DOUBLE RARE — Pokemon ex (17) ===
+DRI 003 x1  # Yanmega ex
+DRI 023 x1  # Arboliva ex
+DRI 025 x1  # Rabsca ex
+DRI 031 x1  # Team Rocket's Moltres ex
+DRI 039 x1  # Ethan's Ho-Oh ex
+DRI 065 x1  # Cetitan ex
+DRI 066 x1  # Dondozo ex
+DRI 069 x1  # Electivire ex
+DRI 081 x1  # Team Rocket's Mewtwo ex
+DRI 101 x1  # Regirock ex
+DRI 104 x1  # Cynthia's Garchomp ex
+DRI 119 x1  # Team Rocket's Nidoking ex
+DRI 122 x1  # Team Rocket's Crobat ex
+DRI 136 x1  # Marnie's Grimmsnarl ex
+DRI 139 x1  # Arven's Mabosstiff ex
+DRI 145 x1  # Steven's Metagross ex
+DRI 150 x1  # Team Rocket's Persian ex
+
+# === ILLUSTRATION RARE (23) ===
+DRI 183 x1  # Yanma
+DRI 184 x1  # Cynthia's Roserade
+DRI 185 x1  # Shaymin
+DRI 186 x1  # Crustle
+DRI 187 x1  # Team Rocket's Spidops
+DRI 188 x1  # Hydrapple
+DRI 189 x1  # Rapidash
+DRI 190 x1  # Ethan's Typhlosion
+DRI 191 x1  # Team Rocket's Houndoom
+DRI 192 x1  # Blaziken
+DRI 193 x1  # Misty's Psyduck
+DRI 194 x1  # Misty's Lapras
+DRI 195 x1  # Clamperl
+DRI 196 x1  # Electrike
+DRI 197 x1  # Rotom
+DRI 198 x1  # Team Rocket's Orbeetle
+DRI 199 x1  # Team Rocket's Weezing
+DRI 200 x1  # Team Rocket's Murkrow
+DRI 201 x1  # Zamazenta
+DRI 202 x1  # Team Rocket's Raticate
+DRI 203 x1  # Team Rocket's Meowth
+DRI 204 x1  # Kangaskhan
+DRI 205 x1  # Arven's Greedent
+
+# === ULTRA RARE (22) ===
+DRI 206 x1  # Yanmega ex
+DRI 207 x1  # Arboliva ex
+DRI 208 x1  # Team Rocket's Moltres ex
+DRI 209 x1  # Ethan's Ho-Oh ex
+DRI 210 x1  # Cetitan ex
+DRI 211 x1  # Dondozo ex
+DRI 212 x1  # Electivire ex
+DRI 213 x1  # Team Rocket's Mewtwo ex
+DRI 214 x1  # Regirock ex
+DRI 215 x1  # Cynthia's Garchomp ex
+DRI 216 x1  # Team Rocket's Nidoking ex
+DRI 217 x1  # Team Rocket's Crobat ex
+DRI 218 x1  # Arven's Mabosstiff ex
+DRI 219 x1  # Team Rocket's Persian ex
+DRI 220 x1  # Emcee's Hype
+DRI 221 x1  # Ethan's Adventure
+DRI 222 x1  # Judge
+DRI 223 x1  # Team Rocket's Archer
+DRI 224 x1  # Team Rocket's Ariana
+DRI 225 x1  # Team Rocket's Giovanni
+DRI 226 x1  # Team Rocket's Petrel
+DRI 227 x1  # Team Rocket's Proton
+
+# === SPECIAL ILLUSTRATION RARE (11) ===
+DRI 228 x1  # Yanmega ex
+DRI 229 x1  # Team Rocket's Moltres ex
+DRI 230 x1  # Ethan's Ho-Oh ex
+DRI 231 x1  # Team Rocket's Mewtwo ex
+DRI 232 x1  # Cynthia's Garchomp ex
+DRI 233 x1  # Team Rocket's Nidoking ex
+DRI 234 x1  # Team Rocket's Crobat ex
+DRI 235 x1  # Arven's Mabosstiff ex
+DRI 236 x1  # Ethan's Adventure
+DRI 237 x1  # Team Rocket's Ariana
+DRI 238 x1  # Team Rocket's Giovanni
+
+# === HYPER RARE (6) ===
+DRI 239 x1  # Ethan's Ho-Oh ex
+DRI 240 x1  # Team Rocket's Mewtwo ex
+DRI 241 x1  # Cynthia's Garchomp ex
+DRI 242 x1  # Team Rocket's Crobat ex
+DRI 243 x1  # Jamming Tower
+DRI 244 x1  # Levincia

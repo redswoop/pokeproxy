@@ -1,0 +1,77 @@
+# Journey Together (sv09) — All Rares and Above
+# 63 cards total
+
+# === RARE (16) ===
+JTG 003 x1  # Butterfree
+JTG 018 x1  # Meowscarada
+JTG 021 x1  # Magmortar
+JTG 037 x1  # Ludicolo
+JTG 041 x1  # Wailord
+JTG 055 x1  # Iono's Kilowattrel
+JTG 063 x1  # Metagross
+JTG 067 x1  # Lillie's Ribombee
+JTG 082 x1  # Regirock
+JTG 085 x1  # Lycanroc
+JTG 095 x1  # Tyranitar
+JTG 107 x1  # Magearna
+JTG 116 x1  # N's Reshiram
+JTG 117 x1  # Hop's Snorlax
+JTG 128 x1  # Noivern
+JTG 136 x1  # Hop's Dubwool
+
+# === DOUBLE RARE (16) ===
+JTG 011 x1  # Amoonguss ex
+JTG 024 x1  # Blaziken ex
+JTG 030 x1  # Reshiram ex
+JTG 031 x1  # Volcanion ex
+JTG 043 x1  # Veluza ex
+JTG 051 x1  # Tapu Koko ex
+JTG 053 x1  # Iono's Bellibolt ex
+JTG 056 x1  # Lillie's Clefairy ex
+JTG 069 x1  # Mimikyu ex
+JTG 075 x1  # Alcremie ex
+JTG 079 x1  # Mamoswine ex
+JTG 094 x1  # Paldean Clodsire ex
+JTG 098 x1  # N's Zoroark ex
+JTG 111 x1  # Hop's Zacian ex
+JTG 114 x1  # Salamence ex
+JTG 121 x1  # Dudunsparce ex
+
+# === ILLUSTRATION RARE (11) ===
+JTG 160 x1  # Maractus
+JTG 161 x1  # Articuno
+JTG 162 x1  # Wailord
+JTG 163 x1  # Iono's Kilowattrel
+JTG 164 x1  # Lillie's Ribombee
+JTG 165 x1  # Swinub
+JTG 166 x1  # Lycanroc
+JTG 167 x1  # N's Reshiram
+JTG 168 x1  # Furret
+JTG 169 x1  # Noibat
+JTG 170 x1  # Hop's Wooloo
+
+# === ULTRA RARE (11) ===
+JTG 171 x1  # Volcanion ex
+JTG 172 x1  # Iono's Bellibolt ex
+JTG 173 x1  # Lillie's Clefairy ex
+JTG 174 x1  # Mamoswine ex
+JTG 175 x1  # N's Zoroark ex
+JTG 176 x1  # Hop's Zacian ex
+JTG 177 x1  # Salamence ex
+JTG 178 x1  # Dudunsparce ex
+JTG 179 x1  # Brock's Scouting
+JTG 180 x1  # Iris's Fighting Spirit
+JTG 181 x1  # Ruffian
+
+# === SPECIAL ILLUSTRATION RARE (6) ===
+JTG 182 x1  # Volcanion ex
+JTG 183 x1  # Iono's Bellibolt ex
+JTG 184 x1  # Lillie's Clefairy ex
+JTG 185 x1  # N's Zoroark ex
+JTG 186 x1  # Hop's Zacian ex
+JTG 187 x1  # Salamence ex
+
+# === HYPER RARE (3) ===
+JTG 188 x1  # Iono's Bellibolt ex
+JTG 189 x1  # N's Zoroark ex
+JTG 190 x1  # Spiky Energy

@@ -1031,7 +1031,7 @@ def parse_decklist(path: str) -> list[tuple[int, str, str, str]]:
     return entries
 
 
-def generate_print_html(cards: list[tuple[int, str]], output_dir: Path):
+def generate_print_html(cards: list[tuple[int, str]], output_dir: Path, out_name: str = "print.html"):
     """Generate a printable HTML file with all proxy cards tiled for letter paper.
 
     Args:
@@ -1082,7 +1082,7 @@ def generate_print_html(cards: list[tuple[int, str]], output_dir: Path):
 </html>
 """)
 
-    out_path = output_dir / "print.html"
+    out_path = output_dir / out_name
     out_path.write_text("".join(html_parts))
     return out_path
 
@@ -1153,7 +1153,8 @@ Decklist format:
             print(f"  ERROR: {e} — skipping")
 
     if print_cards:
-        html_path = generate_print_html(print_cards, OUTPUT_DIR)
+        out_name = Path(decklist_path).with_suffix(".html").name
+        html_path = generate_print_html(print_cards, OUTPUT_DIR, out_name)
         print(f"\nPrint sheet: {html_path}")
 
     print(f"Done! Generated {generated}/{len(entries)} proxy card(s) in {OUTPUT_DIR}/")

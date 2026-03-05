@@ -1,0 +1,115 @@
+# Prismatic Evolutions (sv08.5) — All Rares and Above
+# 101 cards total
+
+# === RARE (21) ===
+PRE 005 x1  # Leafeon
+PRE 008 x1  # Whimsicott
+PRE 013 x1  # Flareon
+PRE 022 x1  # Vaporeon
+PRE 025 x1  # Glaceon
+PRE 029 x1  # Jolteon
+PRE 033 x1  # Espeon
+PRE 037 x1  # Dusknoir
+PRE 040 x1  # Sylveon
+PRE 043 x1  # Flutter Mane
+PRE 044 x1  # Munkidori
+PRE 045 x1  # Fezandipiti
+PRE 046 x1  # Iron Boulder
+PRE 049 x1  # Groudon
+PRE 054 x1  # Bloodmoon Ursaluna
+PRE 057 x1  # Okidogi
+PRE 059 x1  # Umbreon
+PRE 065 x1  # Roaring Moon
+PRE 070 x1  # Archaludon
+PRE 078 x1  # Noctowl
+PRE 080 x1  # Dudunsparce
+
+# === DOUBLE RARE (25) ===
+PRE 006 x1  # Leafeon ex
+PRE 011 x1  # Hydrapple ex
+PRE 012 x1  # Teal Mask Ogerpon ex
+PRE 014 x1  # Flareon ex
+PRE 017 x1  # Hearthflame Mask Ogerpon ex
+PRE 023 x1  # Vaporeon ex
+PRE 026 x1  # Glaceon ex
+PRE 027 x1  # Wellspring Mask Ogerpon ex
+PRE 028 x1  # Pikachu ex
+PRE 030 x1  # Jolteon ex
+PRE 031 x1  # Iron Hands ex
+PRE 032 x1  # Iron Thorns ex
+PRE 034 x1  # Espeon ex
+PRE 041 x1  # Sylveon ex
+PRE 051 x1  # Lucario ex
+PRE 056 x1  # Sandy Shocks ex
+PRE 058 x1  # Cornerstone Mask Ogerpon ex
+PRE 060 x1  # Umbreon ex
+PRE 064 x1  # Tyranitar ex
+PRE 073 x1  # Dragapult ex
+PRE 075 x1  # Eevee ex
+PRE 076 x1  # Snorlax ex
+PRE 082 x1  # Lugia ex
+PRE 091 x1  # Noivern ex
+PRE 092 x1  # Terapagos ex
+
+# === ULTRA RARE (12) ===
+PRE 132 x1  # Amarys
+PRE 133 x1  # Atticus
+PRE 134 x1  # Atticus
+PRE 135 x1  # Brassius
+PRE 136 x1  # Eri
+PRE 137 x1  # Friends in Paldea
+PRE 138 x1  # Giacomo
+PRE 139 x1  # Larry's Skill
+PRE 140 x1  # Mela
+PRE 141 x1  # Ortega
+PRE 142 x1  # Raifort
+PRE 143 x1  # Tyme
+
+# === SPECIAL ILLUSTRATION RARE (32) ===
+PRE 144 x1  # Leafeon ex
+PRE 145 x1  # Teal Mask Ogerpon ex
+PRE 146 x1  # Flareon ex
+PRE 147 x1  # Ceruledge ex
+PRE 148 x1  # Hearthflame Mask Ogerpon ex
+PRE 149 x1  # Vaporeon ex
+PRE 150 x1  # Glaceon ex
+PRE 151 x1  # Palafin ex
+PRE 152 x1  # Wellspring Mask Ogerpon ex
+PRE 153 x1  # Jolteon ex
+PRE 154 x1  # Iron Hands ex
+PRE 155 x1  # Espeon ex
+PRE 156 x1  # Sylveon ex
+PRE 157 x1  # Iron Valiant ex
+PRE 158 x1  # Iron Crown ex
+PRE 159 x1  # Sandy Shocks ex
+PRE 160 x1  # Cornerstone Mask Ogerpon ex
+PRE 161 x1  # Umbreon ex
+PRE 162 x1  # Roaring Moon ex
+PRE 163 x1  # Pecharunt ex
+PRE 164 x1  # Gholdengo ex
+PRE 165 x1  # Dragapult ex
+PRE 166 x1  # Raging Bolt ex
+PRE 167 x1  # Eevee ex
+PRE 168 x1  # Bloodmoon Ursaluna ex
+PRE 169 x1  # Terapagos ex
+PRE 170 x1  # Amarys
+PRE 171 x1  # Crispin
+PRE 172 x1  # Drayton
+PRE 173 x1  # Janine's Secret Art
+PRE 174 x1  # Kieran
+PRE 175 x1  # Lacey
+
+# === HYPER RARE (5) ===
+PRE 176 x1  # Iron Leaves ex
+PRE 177 x1  # Teal Mask Ogerpon ex
+PRE 178 x1  # Walking Wake ex
+PRE 179 x1  # Pikachu ex
+PRE 180 x1  # Terapagos ex
+
+# === ACE SPEC RARE (6) ===
+PRE 116 x1  # Max Rod
+PRE 117 x1  # Maximum Belt
+PRE 119 x1  # Prime Catcher
+PRE 128 x1  # Scoop Up Cyclone
+PRE 129 x1  # Sparkling Crystal
+PRE 131 x1  # Treasure Tracker
