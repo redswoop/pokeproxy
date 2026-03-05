@@ -6,31 +6,33 @@ Generate printable Pokemon TCG proxy cards from a decklist. Cards are rendered a
 
 ### Standard Cards
 
-<p>
-  <strong>Umbreon ex</strong> — Pokemon<br>
-  <img src="docs/sv08.5-060_original.png" width="250">&nbsp;&nbsp;
-  <img src="docs/sv08.5-060_proxy.png" width="250">
-</p>
-
-<p>
-  <strong>Iono</strong> — Trainer / Supporter<br>
-  <img src="docs/sv04.5-080_original.png" width="250">&nbsp;&nbsp;
-  <img src="docs/sv04.5-080_proxy.png" width="250">
-</p>
+<table>
+<tr><th colspan="2">Umbreon ex — Pokemon</th></tr>
+<tr>
+<td><img src="docs/sv08.5-060_original.png" width="250"></td>
+<td><img src="docs/sv08.5-060_proxy.png" width="250"></td>
+</tr>
+<tr><th colspan="2">Iono — Trainer / Supporter</th></tr>
+<tr>
+<td><img src="docs/sv04.5-080_original.png" width="250"></td>
+<td><img src="docs/sv04.5-080_proxy.png" width="250"></td>
+</tr>
+</table>
 
 ### Full-Art Cards (Special Illustration Rare)
 
-<p>
-  <strong>Umbreon ex</strong> — Prismatic Evolutions<br>
-  <img src="docs/sv08.5-161_original.png" width="250">&nbsp;&nbsp;
-  <img src="docs/sv08.5-161_proxy.png" width="250">
-</p>
-
-<p>
-  <strong>Iono</strong> — Paldea Evolved<br>
-  <img src="docs/sv02-269_original.png" width="250">&nbsp;&nbsp;
-  <img src="docs/sv02-269_proxy.png" width="250">
-</p>
+<table>
+<tr><th colspan="2">Umbreon ex — Prismatic Evolutions</th></tr>
+<tr>
+<td><img src="docs/sv08.5-161_original.png" width="250"></td>
+<td><img src="docs/sv08.5-161_proxy.png" width="250"></td>
+</tr>
+<tr><th colspan="2">Iono — Paldea Evolved</th></tr>
+<tr>
+<td><img src="docs/sv02-269_original.png" width="250"></td>
+<td><img src="docs/sv02-269_proxy.png" width="250"></td>
+</tr>
+</table>
 
 ## How It Works
 
