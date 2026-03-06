@@ -684,10 +684,17 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
+        # Right-align retreat dots
+        retreat_w = retreat * (dot_r * 2 + 4) - 4
+        rx = CARD_W - MARGIN - retreat_w
+        # Separator line if there was weakness/resistance before
+        if weakness or resistance:
+            sep_x = int((footer_x + rx) / 2)
+            lines.append(f'  <line x1="{sep_x}" y1="{int(mid_y - tri_s)}" x2="{sep_x}" y2="{int(mid_y + tri_s)}" stroke="{fill}" stroke-width="1" opacity="0.4"/>')
         ccolor = ENERGY_COLORS.get("Colorless", "#888")
         for _ in range(retreat):
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
+            lines.append(f'  <circle cx="{int(rx + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
+            rx += dot_r * 2 + 4
 
     # Set info
     lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 18}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="rgba(255,255,255,0.5)" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
@@ -1027,10 +1034,15 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
+        retreat_w = retreat * (dot_r * 2 + 4) - 4
+        rx = CARD_W - MARGIN - retreat_w
+        if weakness or resistance:
+            sep_x = int((footer_x + rx) / 2)
+            lines.append(f'  <line x1="{sep_x}" y1="{int(mid_y - tri_s)}" x2="{sep_x}" y2="{int(mid_y + tri_s)}" stroke="{fill}" stroke-width="1" opacity="0.4"/>')
         ccolor = ENERGY_COLORS.get("Colorless", "#888")
         for _ in range(retreat):
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
+            lines.append(f'  <circle cx="{int(rx + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
+            rx += dot_r * 2 + 4
 
     # Set info — anchor to bottom of card
     lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 20}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="#888" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
