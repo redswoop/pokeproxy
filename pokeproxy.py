@@ -655,12 +655,18 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
     dot_r = int(BODY_SIZE * 0.45)
     dot_cy = footer_y - dot_r + 2
 
+    tri_h = int(BODY_SIZE * 0.8)
+    tri_w = int(tri_h * 0.9)
+    tri_cy = footer_y - tri_h // 2 - 2
+
     if weakness:
         for w in weakness:
             wtype = w.get("type", "")
             wval = w.get("value", "")
-            lines.append(f'  <text x="{footer_x}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▼</text>')
-            footer_x += BODY_SIZE * 1.5
+            # Down triangle (weakness)
+            tx = int(footer_x)
+            lines.append(f'  <polygon points="{tx},{tri_cy} {tx + tri_w},{tri_cy} {tx + tri_w // 2},{tri_cy + tri_h}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_w + 6
             wcolor = ENERGY_COLORS.get(wtype, "#888")
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
@@ -671,8 +677,10 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
         for r in resistance:
             rtype = r.get("type", "")
             rval = r.get("value", "")
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▲</text>')
-            footer_x += BODY_SIZE * 1.5
+            # Up triangle (resistance)
+            tx = int(footer_x)
+            lines.append(f'  <polygon points="{tx + tri_w // 2},{tri_cy} {tx + tri_w},{tri_cy + tri_h} {tx},{tri_cy + tri_h}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_w + 6
             rcolor = ENERGY_COLORS.get(rtype, "#888")
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
@@ -680,8 +688,12 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
-        lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">↩</text>')
-        footer_x += BODY_SIZE * 1.5
+        # Curved retreat arrow as SVG path
+        ax = int(footer_x)
+        ay = tri_cy + tri_h // 2
+        ar = int(tri_h * 0.45)
+        lines.append(f'  <path d="M{ax + ar * 2},{ay + ar} A{ar},{ar} 0 1,1 {ax},{ay + ar} L{ax},{ay + ar - 4} L{ax - 5},{ay + ar + 3} L{ax + 2},{ay + ar + 8} L{ax},{ay + ar + 4} A{ar},{ar} 0 1,0 {ax + ar * 2},{ay + ar}" fill="none" stroke="{fill}" stroke-width="2.5" filter="url(#shadow)"/>')
+        footer_x += ar * 2 + 10
         ccolor = ENERGY_COLORS.get("Colorless", "#888")
         for _ in range(retreat):
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
@@ -997,12 +1009,17 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
     dot_r = int(BODY_SIZE * 0.45)
     dot_cy = y - dot_r + 2
 
+    tri_h = int(BODY_SIZE * 0.8)
+    tri_w = int(tri_h * 0.9)
+    tri_cy = y - tri_h // 2 - 2
+
     if weakness:
         for w in weakness:
             wtype = w.get("type", "")
             wval = w.get("value", "")
-            lines.append(f'  <text x="{footer_x}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▼</text>')
-            footer_x += BODY_SIZE * 1.5
+            tx = int(footer_x)
+            lines.append(f'  <polygon points="{tx},{tri_cy} {tx + tri_w},{tri_cy} {tx + tri_w // 2},{tri_cy + tri_h}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_w + 6
             wcolor = ENERGY_COLORS.get(wtype, "#888")
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
@@ -1013,8 +1030,9 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
         for r in resistance:
             rtype = r.get("type", "")
             rval = r.get("value", "")
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▲</text>')
-            footer_x += BODY_SIZE * 1.5
+            tx = int(footer_x)
+            lines.append(f'  <polygon points="{tx + tri_w // 2},{tri_cy} {tx + tri_w},{tri_cy + tri_h} {tx},{tri_cy + tri_h}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_w + 6
             rcolor = ENERGY_COLORS.get(rtype, "#888")
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
@@ -1022,8 +1040,11 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
-        lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">↩</text>')
-        footer_x += BODY_SIZE * 1.5
+        ax = int(footer_x)
+        ay = tri_cy + tri_h // 2
+        ar = int(tri_h * 0.45)
+        lines.append(f'  <path d="M{ax + ar * 2},{ay + ar} A{ar},{ar} 0 1,1 {ax},{ay + ar} L{ax},{ay + ar - 4} L{ax - 5},{ay + ar + 3} L{ax + 2},{ay + ar + 8} L{ax},{ay + ar + 4} A{ar},{ar} 0 1,0 {ax + ar * 2},{ay + ar}" fill="none" stroke="{fill}" stroke-width="2.5" filter="url(#shadow)"/>')
+        footer_x += ar * 2 + 10
         ccolor = ENERGY_COLORS.get("Colorless", "#888")
         for _ in range(retreat):
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
