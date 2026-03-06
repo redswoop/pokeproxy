@@ -75,6 +75,11 @@ ENERGY_ABBREV = {
     "Colorless": "C",
 }
 
+# Font stacks used across all card renderers
+FONT_TITLE = "'Arial Black', 'Helvetica Neue', Impact, Arial, sans-serif"
+FONT_BODY = "'Helvetica Neue', 'Arial Black', Arial, Helvetica, sans-serif"
+MARGIN = 30
+
 # --- FreeType font measurement ---
 # Load the actual fonts used in SVG rendering for accurate text measurement
 _TITLE_FACE = freetype.Face('/System/Library/Fonts/Supplemental/Arial Black.ttf')
@@ -408,6 +413,77 @@ def energy_inline_svg(text: str, font_size: int) -> str:
     return re.sub(r'\{([A-Z])\}', replace_energy, escaped)
 
 
+def render_footer_svg(lines, card, category, card_type, retreat, body_size,
+                      set_name, local_id, *, footer_y, sep_offset, sep_color,
+                      fill, retreat_dot_fill, info_y, info_fill):
+    """Render card footer: weakness/resistance icons, retreat dots, and set info."""
+    if category == "Trainer":
+        weakness = None
+        resistance = None
+        retreat = 0
+    else:
+        weakness = card.get("weaknesses")
+        resistance = card.get("resistances")
+        if not weakness and not resistance and card_type in TYPE_MATCHUPS:
+            wt, wv, rt, rv = TYPE_MATCHUPS[card_type]
+            if wt:
+                weakness = [{"type": wt, "value": wv}]
+            if rt:
+                resistance = [{"type": rt, "value": rv}]
+
+    has_footer = weakness or resistance or retreat
+    if has_footer:
+        lines.append(f'  <line x1="20" y1="{footer_y - sep_offset}" x2="{CARD_W - 20}" y2="{footer_y - sep_offset}" stroke="{sep_color}" stroke-width="1"/>')
+
+    footer_x = MARGIN
+    dot_r = int(body_size * 0.45)
+    mid_y = footer_y - body_size * 0.35
+    tri_s = int(body_size * 0.55)
+
+    if weakness:
+        for w in weakness:
+            wtype = w.get("type", "")
+            wval = w.get("value", "")
+            tx = int(footer_x) + tri_s
+            lines.append(f'  <polygon points="{tx - tri_s},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y - tri_s)} {tx},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_s * 2 + 6
+            wcolor = ENERGY_COLORS.get(wtype, "#888")
+            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
+            footer_x += dot_r * 2 + 4
+            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{body_size}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(wval)}</text>')
+            footer_x += body_size * 2.5
+
+    if resistance:
+        for r in resistance:
+            rtype = r.get("type", "")
+            rval = r.get("value", "")
+            tx = int(footer_x) + tri_s
+            lines.append(f'  <polygon points="{tx},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y + tri_s)} {tx - tri_s},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
+            footer_x += tri_s * 2 + 6
+            rcolor = ENERGY_COLORS.get(rtype, "#888")
+            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
+            footer_x += dot_r * 2 + 4
+            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{body_size}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(rval)}</text>')
+            footer_x += body_size * 2.5
+
+    if retreat:
+        if weakness or resistance:
+            footer_x += body_size * 0.5
+            lines.append(f'  <line x1="{int(footer_x)}" y1="{int(mid_y - tri_s)}" x2="{int(footer_x)}" y2="{int(mid_y + tri_s)}" stroke="{fill}" stroke-width="1" opacity="0.4"/>')
+            footer_x += body_size * 0.5
+        ax = int(footer_x)
+        amy = int(mid_y)
+        as_ = tri_s
+        lines.append(f'  <polygon points="{ax},{amy} {ax + as_},{amy - as_} {ax + as_},{amy + as_}" fill="{fill}" filter="url(#shadow)"/>')
+        lines.append(f'  <line x1="{ax + as_}" y1="{amy}" x2="{ax + as_ * 2}" y2="{amy}" stroke="{fill}" stroke-width="3" filter="url(#shadow)"/>')
+        footer_x += as_ * 2 + 8
+        for _ in range(retreat):
+            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{retreat_dot_fill}" stroke="#333" stroke-width="2"/>')
+            footer_x += dot_r * 2 + 4
+
+    lines.append(f'  <text x="{CARD_W // 2}" y="{info_y}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="{info_fill}" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
+
+
 def is_fullart(card: dict) -> bool:
     """Detect if a card is a full-art variant (artwork spans the entire card)."""
     rarity = (card.get("rarity") or "").lower()
@@ -473,9 +549,6 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
         else:
             color = "#1860A0"
 
-    FONT_TITLE = "'Arial Black', 'Helvetica Neue', Impact, Arial, sans-serif"
-    FONT_BODY = "'Helvetica Neue', 'Arial Black', Arial, Helvetica, sans-serif"
-    MARGIN = 30
     text_max_w = CARD_W - 2 * MARGIN
 
     # Measure text to determine how much overlay we need
@@ -634,73 +707,11 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
                 lines.append(f'  <text x="{MARGIN}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="white" filter="url(#shadow)">{markup}</text>')
         y += int(BODY_SIZE * 1.25)
 
-    # Footer: weakness, resistance, retreat
-    footer_y = CARD_H - 55
-    weakness = card.get("weaknesses")
-    resistance = card.get("resistances")
-    # Derive from type matchup table if API didn't provide
-    if not weakness and not resistance and card_type in TYPE_MATCHUPS:
-        wt, wv, rt, rv = TYPE_MATCHUPS[card_type]
-        if wt:
-            weakness = [{"type": wt, "value": wv}]
-        if rt:
-            resistance = [{"type": rt, "value": rv}]
-    has_footer = weakness or resistance or retreat
-
-    if has_footer:
-        lines.append(f'  <line x1="20" y1="{footer_y - 18}" x2="{CARD_W - 20}" y2="{footer_y - 18}" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>')
-
-    footer_x = MARGIN
-    fill = "rgba(255,255,255,0.9)"
-    dot_r = int(BODY_SIZE * 0.45)
-    # Vertical center for all icons/dots — align to text midline
-    mid_y = footer_y - BODY_SIZE * 0.35
-    tri_s = int(BODY_SIZE * 0.55)  # triangle half-size
-
-    if weakness:
-        for w in weakness:
-            wtype = w.get("type", "")
-            wval = w.get("value", "")
-            tx = int(footer_x) + tri_s
-            lines.append(f'  <polygon points="{tx - tri_s},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y - tri_s)} {tx},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
-            footer_x += tri_s * 2 + 6
-            wcolor = ENERGY_COLORS.get(wtype, "#888")
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(wval)}</text>')
-            footer_x += BODY_SIZE * 2.5
-
-    if resistance:
-        for r in resistance:
-            rtype = r.get("type", "")
-            rval = r.get("value", "")
-            tx = int(footer_x) + tri_s
-            lines.append(f'  <polygon points="{tx},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y + tri_s)} {tx - tri_s},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
-            footer_x += tri_s * 2 + 6
-            rcolor = ENERGY_COLORS.get(rtype, "#888")
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(rval)}</text>')
-            footer_x += BODY_SIZE * 2.5
-
-    if retreat:
-        if weakness or resistance:
-            footer_x += BODY_SIZE * 0.5
-            lines.append(f'  <line x1="{int(footer_x)}" y1="{int(mid_y - tri_s)}" x2="{int(footer_x)}" y2="{int(mid_y + tri_s)}" stroke="{fill}" stroke-width="1" opacity="0.4"/>')
-            footer_x += BODY_SIZE * 0.5
-        # Left-pointing arrow as retreat icon
-        ax = int(footer_x)
-        amy = int(mid_y)
-        as_ = tri_s
-        lines.append(f'  <polygon points="{ax},{amy} {ax + as_},{amy - as_} {ax + as_},{amy + as_}" fill="{fill}" filter="url(#shadow)"/>')
-        lines.append(f'  <line x1="{ax + as_}" y1="{amy}" x2="{ax + as_ * 2}" y2="{amy}" stroke="{fill}" stroke-width="3" filter="url(#shadow)"/>')
-        footer_x += as_ * 2 + 8
-        for _ in range(retreat):
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="white" stroke="#333" stroke-width="2"/>')
-            footer_x += dot_r * 2 + 4
-
-    # Set info
-    lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 18}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="rgba(255,255,255,0.5)" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
+    render_footer_svg(lines, card, category, card_type, retreat, BODY_SIZE,
+                      set_name, local_id, footer_y=CARD_H - 55, sep_offset=18,
+                      sep_color="rgba(255,255,255,0.3)", fill="rgba(255,255,255,0.9)",
+                      retreat_dot_fill="white", info_y=CARD_H - 18,
+                      info_fill="rgba(255,255,255,0.5)")
 
     lines.append("</svg>")
     return "\n".join(lines)
@@ -745,10 +756,6 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
 
     lines = []
     lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CARD_W} {CARD_H}" width="{CARD_W}" height="{CARD_H}">')
-    # Font stacks: heavy for titles, semi-bold for body
-    # Use single quotes inside so we can wrap in double quotes in the XML attribute
-    FONT_TITLE = "'Arial Black', 'Helvetica Neue', Impact, Arial, sans-serif"
-    FONT_BODY = "'Helvetica Neue', 'Arial Black', Arial, Helvetica, sans-serif"
 
     lines.append("  <defs>")
     lines.append(f'    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">')
@@ -852,7 +859,6 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
     ART_H_MAX = int(art_w / 1.59)  # ~447
     ART_H_MIN = 200
     ART_PAD = 40  # padding between art and text
-    MARGIN = 30
     content_bottom = CARD_H - 90  # leave room for footer + set info
     text_max_w = CARD_W - 2 * MARGIN  # 690px usable for text
 
@@ -988,71 +994,10 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
                 lines.append(f'  <text x="{MARGIN}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#222" filter="url(#shadow)">{markup}</text>')
         y += int(BODY_SIZE * 1.25)
 
-    # Footer: weakness, resistance, retreat — anchored to bottom
-    weakness = card.get("weaknesses")
-    resistance = card.get("resistances")
-    if not weakness and not resistance and card_type in TYPE_MATCHUPS:
-        wt, wv, rt, rv = TYPE_MATCHUPS[card_type]
-        if wt:
-            weakness = [{"type": wt, "value": wv}]
-        if rt:
-            resistance = [{"type": rt, "value": rv}]
-    has_footer = weakness or resistance or retreat
-    footer_y = CARD_H - 60
-
-    if has_footer:
-        lines.append(f'  <line x1="20" y1="{footer_y - 20}" x2="{CARD_W - 20}" y2="{footer_y - 20}" stroke="#ccc" stroke-width="1"/>')
-
-    footer_x = MARGIN
-    y = footer_y  # reuse y for footer positioning
-    fill = "#444"
-    dot_r = int(BODY_SIZE * 0.45)
-    mid_y = y - BODY_SIZE * 0.35
-    tri_s = int(BODY_SIZE * 0.55)
-
-    if weakness:
-        for w in weakness:
-            wtype = w.get("type", "")
-            wval = w.get("value", "")
-            tx = int(footer_x) + tri_s
-            lines.append(f'  <polygon points="{tx - tri_s},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y - tri_s)} {tx},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
-            footer_x += tri_s * 2 + 6
-            wcolor = ENERGY_COLORS.get(wtype, "#888")
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(wval)}</text>')
-            footer_x += BODY_SIZE * 2.5
-
-    if resistance:
-        for r in resistance:
-            rtype = r.get("type", "")
-            rval = r.get("value", "")
-            tx = int(footer_x) + tri_s
-            lines.append(f'  <polygon points="{tx},{int(mid_y - tri_s)} {tx + tri_s},{int(mid_y + tri_s)} {tx - tri_s},{int(mid_y + tri_s)}" fill="{fill}" filter="url(#shadow)"/>')
-            footer_x += tri_s * 2 + 6
-            rcolor = ENERGY_COLORS.get(rtype, "#888")
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
-            footer_x += dot_r * 2 + 4
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(rval)}</text>')
-            footer_x += BODY_SIZE * 2.5
-
-    if retreat:
-        if weakness or resistance:
-            footer_x += BODY_SIZE * 0.5
-            lines.append(f'  <line x1="{int(footer_x)}" y1="{int(mid_y - tri_s)}" x2="{int(footer_x)}" y2="{int(mid_y + tri_s)}" stroke="{fill}" stroke-width="1" opacity="0.4"/>')
-            footer_x += BODY_SIZE * 0.5
-        ax = int(footer_x)
-        amy = int(mid_y)
-        as_ = tri_s
-        lines.append(f'  <polygon points="{ax},{amy} {ax + as_},{amy - as_} {ax + as_},{amy + as_}" fill="{fill}" filter="url(#shadow)"/>')
-        lines.append(f'  <line x1="{ax + as_}" y1="{amy}" x2="{ax + as_ * 2}" y2="{amy}" stroke="{fill}" stroke-width="3" filter="url(#shadow)"/>')
-        footer_x += as_ * 2 + 8
-        for _ in range(retreat):
-            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{int(mid_y)}" r="{dot_r}" fill="#ddd" stroke="#333" stroke-width="2"/>')
-            footer_x += dot_r * 2 + 4
-
-    # Set info — anchor to bottom of card
-    lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 20}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="#888" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
+    render_footer_svg(lines, card, category, card_type, retreat, BODY_SIZE,
+                      set_name, local_id, footer_y=CARD_H - 60, sep_offset=20,
+                      sep_color="#ccc", fill="#444", retreat_dot_fill="#ddd",
+                      info_y=CARD_H - 20, info_fill="#888")
 
     lines.append("</svg>")
     return "\n".join(lines)
