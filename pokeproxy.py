@@ -416,11 +416,15 @@ def is_fullart(card: dict) -> bool:
     return False
 
 
-def generate_fullart_svg(card: dict, image_b64: str) -> str:
+def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.7,
+                         font_size: int = None, max_cover: float = 0.55) -> str:
     """Generate an SVG proxy for a full-art card.
 
     Uses the full card image as background with a gradient overlay
     on the lower portion, then renders large readable text on top.
+    overlay_opacity: max darkness of the text background (0.0–1.0).
+    font_size: force body font size in px (None = auto-select 36 or 30).
+    max_cover: max fraction of card the overlay can cover (0.0–1.0).
     """
     name = escape_xml(card.get("name", "Unknown"))
     hp = card.get("hp", "")
@@ -471,7 +475,20 @@ def generate_fullart_svg(card: dict, image_b64: str) -> str:
 
     # Try large (36) first, drop to medium (30) if overlay would cover >50% of card
     BODY_LARGE, BODY_MEDIUM = 36, 30
-    if has_text:
+    if font_size is not None:
+        # Forced font size — skip auto-selection
+        BODY_SIZE = font_size
+        if has_text:
+            head_candidate = int(BODY_SIZE * HEAD_RATIO)
+            text_h = ft_content_height(
+                BODY_SIZE, head_candidate, text_max_w,
+                category, trainer_effect, abilities, attacks)
+            text_block_h = text_h + text_pad + footer_h
+            overlay_top = CARD_H - text_block_h - 40
+        else:
+            text_h = 0
+            overlay_top = CARD_H - footer_h - 40
+    elif has_text:
         for body_candidate in [BODY_LARGE, BODY_MEDIUM]:
             head_candidate = int(body_candidate * HEAD_RATIO)
             text_h = ft_content_height(
@@ -494,7 +511,7 @@ def generate_fullart_svg(card: dict, image_b64: str) -> str:
     if has_text:
         text_block_h = text_h + text_pad + footer_h
         overlay_top = CARD_H - text_block_h - 40
-    overlay_top = max(overlay_top, int(CARD_H * 0.35))  # never cover more than 65%
+    overlay_top = max(overlay_top, int(CARD_H * (1.0 - max_cover)))
 
     lines = []
     lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {CARD_W} {CARD_H}" width="{CARD_W}" height="{CARD_H}">')
@@ -502,9 +519,9 @@ def generate_fullart_svg(card: dict, image_b64: str) -> str:
     # Gradient overlay: transparent at top, quickly ramps to near-opaque
     lines.append('    <linearGradient id="overlay-grad" x1="0" y1="0" x2="0" y2="1">')
     lines.append(f'      <stop offset="0%" stop-color="#000" stop-opacity="0"/>')
-    lines.append(f'      <stop offset="15%" stop-color="#000" stop-opacity="0.75"/>')
-    lines.append(f'      <stop offset="40%" stop-color="#000" stop-opacity="0.92"/>')
-    lines.append(f'      <stop offset="100%" stop-color="#000" stop-opacity="0.95"/>')
+    lines.append(f'      <stop offset="15%" stop-color="#000" stop-opacity="{overlay_opacity * 0.6:.2f}"/>')
+    lines.append(f'      <stop offset="40%" stop-color="#000" stop-opacity="{overlay_opacity * 0.85:.2f}"/>')
+    lines.append(f'      <stop offset="100%" stop-color="#000" stop-opacity="{overlay_opacity:.2f}"/>')
     lines.append('    </linearGradient>')
     # Header gradient: dark at top, transparent at bottom
     lines.append('    <linearGradient id="header-grad" x1="0" y1="0" x2="0" y2="1">')
@@ -722,7 +739,8 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
     lines.append("    </filter>")
     lines.append("  </defs>")
 
-    # Card background
+    # Card background — solid white base so transparent areas don't bleed through
+    lines.append(f'  <rect width="{CARD_W}" height="{CARD_H}" rx="25" ry="25" fill="white"/>')
     lines.append(f'  <rect width="{CARD_W}" height="{CARD_H}" rx="25" ry="25" fill="url(#bg)" stroke="{color}" stroke-width="4"/>')
 
     # Header bar
@@ -980,13 +998,20 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
     return "\n".join(lines)
 
 
-def parse_decklist(path: str) -> list[tuple[int, str, str, str]]:
-    """Parse a decklist file. Returns list of (count, set_code, number, comment).
+def parse_decklist(path: str) -> list[tuple[int, str, str, str, dict]]:
+    """Parse a decklist file. Returns list of (count, set_code, number, comment, overrides).
 
     Supports two formats:
       COUNT SET NUM        # old format: 3 SFA 36
       SET NUM xCOUNT       # new format: SFA 36 x3
-    Count is parsed but currently only used for future print layouts.
+
+    Per-card overrides can be added as key=value tokens:
+      BBT 169 x1 overlay=0.4 font=28  # Genesect ex SIR
+
+    Supported overrides:
+      overlay=N   Full-art overlay opacity (0.0–1.0)
+      font=N      Force body font size in px
+      max_cover=N Max fraction of card the overlay can cover (0.0–1.0)
     """
     entries = []
     seen = set()
@@ -1006,6 +1031,20 @@ def parse_decklist(path: str) -> list[tuple[int, str, str, str]]:
             if len(parts) < 2:
                 print(f"  Skipping malformed line: {line}")
                 continue
+
+            # Extract key=value overrides from parts
+            overrides = {}
+            remaining = []
+            for p in parts:
+                if "=" in p and not p.startswith("="):
+                    k, v = p.split("=", 1)
+                    try:
+                        overrides[k] = float(v)
+                    except ValueError:
+                        overrides[k] = v
+                else:
+                    remaining.append(p)
+            parts = remaining
 
             # Detect format: does it start with a number or a set code?
             if parts[0].isdigit():
@@ -1027,7 +1066,7 @@ def parse_decklist(path: str) -> list[tuple[int, str, str, str]]:
             key = (set_code, number)
             if key not in seen:
                 seen.add(key)
-                entries.append((count, set_code, number, comment))
+                entries.append((count, set_code, number, comment, overrides))
     return entries
 
 
@@ -1100,6 +1139,9 @@ Arguments:
 
 Options:
   --no-dupes        Print one copy of each card regardless of decklist count
+  --overlay N       Full-art overlay opacity, 0.0–1.0 (default: 0.7)
+  --font N          Full-art body font size in px (default: auto 36/30)
+  --max-cover N     Max fraction of card the overlay can cover (default: 0.55)
   -h, --help        Show this help message
 
 Output:
@@ -1109,11 +1151,36 @@ Output:
 Decklist format:
   SFA 36 x3         Set code, card number, optional count
   3 SFA 36          Count, set code, card number (alt format)
-  # comment         Lines starting with # are ignored""")
+  # comment         Lines starting with # are ignored
+
+Per-card overrides (on the same line, before the # comment):
+  overlay=0.4       Full-art overlay opacity (0.0–1.0)
+  font=28           Force body font size in px
+  max_cover=0.6     Max fraction of card the overlay can cover""")
         sys.exit(0)
 
     no_dupes = "--no-dupes" in args
-    args = [a for a in args if not a.startswith("-")]
+    # Parse --key value flags
+    defaults = {"overlay": 0.7, "font": None, "max_cover": 0.55}
+    flag_map = {"--overlay": "overlay", "--font": "font", "--max-cover": "max_cover"}
+    positional = []
+    i = 0
+    while i < len(args):
+        if args[i] in flag_map and i + 1 < len(args):
+            key = flag_map[args[i]]
+            defaults[key] = float(args[i + 1])
+            i += 2
+        elif args[i].startswith("-"):
+            i += 1
+        else:
+            positional.append(args[i])
+            i += 1
+    overlay_opacity = defaults["overlay"]
+    default_font = defaults["font"]
+    if default_font is not None:
+        default_font = int(default_font)
+    default_max_cover = defaults["max_cover"]
+    args = positional
 
     decklist_path = args[0] if args else "decklist.txt"
     if not os.path.exists(decklist_path):
@@ -1129,9 +1196,11 @@ Decklist format:
 
     generated = 0
     print_cards = []  # (count, svg_content) for print.html
-    for count, set_code, number, comment in entries:
+    for count, set_code, number, comment, overrides in entries:
         label = comment or f"{set_code} {number}"
         print(f"Processing {count}x {label}...")
+        if overrides:
+            print(f"  Overrides: {overrides}")
 
         try:
             card = fetch_card(set_code, number)
@@ -1139,7 +1208,12 @@ Decklist format:
             if is_fullart(card):
                 print(f"  Full-art detected ({card.get('rarity', 'unknown')})")
                 image_b64 = base64.b64encode(image_data).decode()
-                svg = generate_fullart_svg(card, image_b64)
+                card_overlay = overrides.get("overlay", overlay_opacity)
+                card_font = overrides.get("font", default_font)
+                if card_font is not None:
+                    card_font = int(card_font)
+                card_max_cover = overrides.get("max_cover", default_max_cover)
+                svg = generate_fullart_svg(card, image_b64, card_overlay, card_font, card_max_cover)
             else:
                 artwork_b64 = crop_artwork(image_data)
                 svg = generate_svg(card, artwork_b64)

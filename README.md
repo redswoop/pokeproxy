@@ -76,6 +76,15 @@ PAF 80  x3  # Iono
 
 Each line has a set code (e.g. `SFA`, `PAF`, `SVI`), a card number, and an optional count (`x3`). See `set_codes.py` for the full list of supported set codes (Scarlet & Violet era).
 
+Per-card overrides can be added as `key=value` tokens on any line (full-art cards only):
+
+```
+BBT 169 x1 overlay=0.4              # less dark overlay
+BBT 169 x1 font=28                  # smaller text
+BBT 169 x1 max_cover=0.6            # overlay can cover up to 60% of card
+BBT 169 x1 overlay=0.3 font=24      # combine multiple overrides
+```
+
 ## Usage
 
 ```bash
@@ -87,6 +96,9 @@ python pokeproxy.py decklist_gallery.txt
 
 # One copy per card (ignore counts)
 python pokeproxy.py --no-dupes decklist.txt
+
+# Adjust full-art overlay darkness (0.0 = transparent, 1.0 = opaque)
+python pokeproxy.py --overlay 0.4 decklist_gallery.txt
 ```
 
 ### Output
