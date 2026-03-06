@@ -44,6 +44,22 @@ TYPE_COLORS = {
     "Colorless": "#8A8A70",
 }
 
+# SV-era type matchups: (weakness_type, weakness_value, resistance_type, resistance_value)
+# None means no weakness/resistance for that slot
+TYPE_MATCHUPS = {
+    "Fire":      ("Water",    "×2", None,      None),
+    "Water":     ("Lightning","×2", None,      None),
+    "Grass":     ("Fire",     "×2", None,      None),
+    "Lightning": ("Fighting", "×2", None,      None),
+    "Psychic":   ("Darkness", "×2", "Fighting", "-30"),
+    "Fighting":  ("Psychic",  "×2", None,      None),
+    "Darkness":  ("Grass",    "×2", None,      None),
+    "Metal":     ("Fire",     "×2", "Grass",   "-30"),
+    "Dragon":    (None,       None,  None,      None),
+    "Colorless": ("Fighting", "×2", None,      None),
+    "Fairy":     ("Metal",    "×2", "Darkness", "-30"),
+}
+
 # Energy symbols (single-letter abbreviations)
 ENERGY_ABBREV = {
     "Grass": "G",
@@ -618,46 +634,58 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
                 lines.append(f'  <text x="{MARGIN}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="white" filter="url(#shadow)">{markup}</text>')
         y += int(BODY_SIZE * 1.25)
 
-    # Footer
+    # Footer: weakness, resistance, retreat
     footer_y = CARD_H - 55
     weakness = card.get("weaknesses")
     resistance = card.get("resistances")
+    # Derive from type matchup table if API didn't provide
+    if not weakness and not resistance and card_type in TYPE_MATCHUPS:
+        wt, wv, rt, rv = TYPE_MATCHUPS[card_type]
+        if wt:
+            weakness = [{"type": wt, "value": wv}]
+        if rt:
+            resistance = [{"type": rt, "value": rv}]
     has_footer = weakness or resistance or retreat
 
     if has_footer:
         lines.append(f'  <line x1="20" y1="{footer_y - 18}" x2="{CARD_W - 20}" y2="{footer_y - 18}" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>')
 
     footer_x = MARGIN
+    fill = "rgba(255,255,255,0.9)"
+    dot_r = int(BODY_SIZE * 0.45)
+    dot_cy = footer_y - dot_r + 2
+
     if weakness:
         for w in weakness:
             wtype = w.get("type", "")
             wval = w.get("value", "")
-            lines.append(f'  <text x="{footer_x}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="rgba(255,255,255,0.9)" filter="url(#shadow)">Weak:</text>')
-            footer_x += BODY_SIZE * 3.8
+            lines.append(f'  <text x="{footer_x}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▼</text>')
+            footer_x += BODY_SIZE * 1.5
             wcolor = ENERGY_COLORS.get(wtype, "#888")
-            dot_r = int(BODY_SIZE * 0.45)
-            dot_cy = footer_y - dot_r + 2
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="rgba(255,255,255,0.9)" filter="url(#shadow)">{escape_xml(wval)}</text>')
+            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(wval)}</text>')
             footer_x += BODY_SIZE * 2.5
 
     if resistance:
         for r in resistance:
             rtype = r.get("type", "")
             rval = r.get("value", "")
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="rgba(255,255,255,0.9)" filter="url(#shadow)">Resist:</text>')
-            footer_x += BODY_SIZE * 4.5
+            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▲</text>')
+            footer_x += BODY_SIZE * 1.5
             rcolor = ENERGY_COLORS.get(rtype, "#888")
-            dot_r = int(BODY_SIZE * 0.45)
-            dot_cy = footer_y - dot_r + 2
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
-            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="rgba(255,255,255,0.9)" filter="url(#shadow)">{escape_xml(rval)}</text>')
+            lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(rval)}</text>')
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
-        lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="rgba(255,255,255,0.9)" filter="url(#shadow)">Retreat: {retreat}</text>')
+        lines.append(f'  <text x="{int(footer_x)}" y="{footer_y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">↩</text>')
+        footer_x += BODY_SIZE * 1.5
+        ccolor = ENERGY_COLORS.get("Colorless", "#888")
+        for _ in range(retreat):
+            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
+            footer_x += dot_r * 2 + 4
 
     # Set info
     lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 18}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="rgba(255,255,255,0.5)" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
@@ -951,6 +979,12 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
     # Footer: weakness, resistance, retreat — anchored to bottom
     weakness = card.get("weaknesses")
     resistance = card.get("resistances")
+    if not weakness and not resistance and card_type in TYPE_MATCHUPS:
+        wt, wv, rt, rv = TYPE_MATCHUPS[card_type]
+        if wt:
+            weakness = [{"type": wt, "value": wv}]
+        if rt:
+            resistance = [{"type": rt, "value": rv}]
     has_footer = weakness or resistance or retreat
     footer_y = CARD_H - 60
 
@@ -959,37 +993,41 @@ def generate_svg(card: dict, artwork_b64: str) -> str:
 
     footer_x = MARGIN
     y = footer_y  # reuse y for footer positioning
+    fill = "#444"
+    dot_r = int(BODY_SIZE * 0.45)
+    dot_cy = y - dot_r + 2
 
     if weakness:
         for w in weakness:
             wtype = w.get("type", "")
             wval = w.get("value", "")
-            lines.append(f'  <text x="{footer_x}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#444" filter="url(#shadow)">Weak:</text>')
-            footer_x += BODY_SIZE * 3.8
+            lines.append(f'  <text x="{footer_x}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▼</text>')
+            footer_x += BODY_SIZE * 1.5
             wcolor = ENERGY_COLORS.get(wtype, "#888")
-            dot_r = int(BODY_SIZE * 0.45)
-            dot_cy = y - dot_r + 2
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{wcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#444" filter="url(#shadow)">{escape_xml(wval)}</text>')
+            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(wval)}</text>')
             footer_x += BODY_SIZE * 2.5
 
     if resistance:
         for r in resistance:
             rtype = r.get("type", "")
             rval = r.get("value", "")
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#444" filter="url(#shadow)">Resist:</text>')
-            footer_x += BODY_SIZE * 4.5
+            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">▲</text>')
+            footer_x += BODY_SIZE * 1.5
             rcolor = ENERGY_COLORS.get(rtype, "#888")
-            dot_r = int(BODY_SIZE * 0.45)
-            dot_cy = y - dot_r + 2
             lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{rcolor}" stroke="#333" stroke-width="1.5"/>')
             footer_x += dot_r * 2 + 6
-            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#444" filter="url(#shadow)">{escape_xml(rval)}</text>')
+            lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">{escape_xml(rval)}</text>')
             footer_x += BODY_SIZE * 2.5
 
     if retreat:
-        lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="#444" filter="url(#shadow)">Retreat: {retreat}</text>')
+        lines.append(f'  <text x="{int(footer_x)}" y="{y}" font-family="{FONT_BODY}" font-size="{BODY_SIZE}" font-weight="700" fill="{fill}" filter="url(#shadow)">↩</text>')
+        footer_x += BODY_SIZE * 1.5
+        ccolor = ENERGY_COLORS.get("Colorless", "#888")
+        for _ in range(retreat):
+            lines.append(f'  <circle cx="{int(footer_x + dot_r)}" cy="{dot_cy}" r="{dot_r}" fill="{ccolor}" stroke="#333" stroke-width="1.5"/>')
+            footer_x += dot_r * 2 + 4
 
     # Set info — anchor to bottom of card
     lines.append(f'  <text x="{CARD_W // 2}" y="{CARD_H - 20}" font-family="{FONT_BODY}" font-size="18" font-weight="600" fill="#888" text-anchor="middle">{escape_xml(set_name)} {escape_xml(local_id)}</text>')
