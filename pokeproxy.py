@@ -16,6 +16,17 @@ from set_codes import SET_MAP
 
 CACHE_DIR = Path(__file__).parent / "cache"
 OUTPUT_DIR = Path(__file__).parent / "output"
+CLEAN_DIR = Path(__file__).parent.parent / "pokecleaner" / "output"
+
+# Framehouse / PokeCleaner integration
+FRAMEHOUSE_URL = "http://localhost:3000"
+FLUX_W, FLUX_H = 736, 1024
+DEFAULT_MASK_TOP = 0.20
+DEFAULT_CLEAN_PROMPT = (
+    "continue the artwork illustration, extend the scene naturally, "
+    "no text, no writing, no letters, no numbers, no symbols, "
+    "clean artwork only, high quality illustration"
+)
 
 # Pokemon card dimensions: 2.5" x 3.5" at 300dpi = 750x1050
 # We'll use a standard card ratio for SVG
@@ -178,6 +189,121 @@ def fetch_image(image_url: str, card_id: str) -> bytes:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     cache_file.write_bytes(data)
     return data
+
+
+def check_framehouse(server_url: str = FRAMEHOUSE_URL) -> bool:
+    """Ping framehouse server. Returns True if reachable."""
+    try:
+        req = urllib.request.Request(f"{server_url}/api/adapters")
+        urllib.request.urlopen(req, timeout=5)
+        return True
+    except Exception:
+        return False
+
+
+def submit_compose(image_b64: str, prompt: str, seed: int = 42,
+                   server_url: str = FRAMEHOUSE_URL) -> str | None:
+    """Submit a Klein compose job to framehouse. Returns base64 result or None."""
+    job_spec = {
+        "intent": "compose",
+        "prompt": prompt,
+        "seed": seed,
+        "size": {"width": FLUX_W, "height": FLUX_H},
+        "inputs": {
+            "img1": {
+                "type": "image",
+                "base64": image_b64,
+            }
+        },
+        "timeoutMs": 180000,
+    }
+
+    url = f"{server_url}/api/generate/adaptive"
+    data = json.dumps(job_spec).encode()
+    req = urllib.request.Request(
+        url, data=data, headers={"Content-Type": "application/json"},
+    )
+
+    print(f"  Submitting to framehouse ({server_url})...")
+    try:
+        resp = urllib.request.urlopen(req, timeout=300)
+    except Exception as e:
+        print(f"  Framehouse request failed: {e}")
+        return None
+    result = json.loads(resp.read())
+
+    if result.get("status") == "failed":
+        print(f"  Framehouse FAILED: {result.get('error', 'unknown')}")
+        return None
+
+    for artifact in result.get("artifacts", []):
+        if artifact.get("type") == "image" and artifact.get("data"):
+            return artifact["data"]
+
+    print("  Framehouse FAILED: No image in response")
+    return None
+
+
+def clean_card_image(card_id: str, mode: str = "composite",
+                     mask_top: float = DEFAULT_MASK_TOP, seed: int = 42,
+                     server_url: str = FRAMEHOUSE_URL) -> Path | None:
+    """Get a cleaned card image, generating via framehouse if needed.
+
+    mode: "composite" (original top + generated bottom) or "clean" (fully generated)
+    Returns path to the image file, or None on failure.
+    """
+    from PIL import Image
+
+    suffix = f"_{mode}"  # _composite or _clean
+
+    # Check local cache first
+    cached = CACHE_DIR / f"{card_id}{suffix}.png"
+    if cached.exists():
+        return cached
+
+    # Check legacy pokecleaner output
+    legacy = CLEAN_DIR / f"{card_id}{suffix}.png"
+    if legacy.exists():
+        return legacy
+
+    # Need to generate — load source image from cache
+    src = CACHE_DIR / f"{card_id}.png"
+    if not src.exists():
+        print(f"  No source image for {card_id}")
+        return None
+
+    img = Image.open(src).convert("RGB")
+    img_resized = img.resize((FLUX_W, FLUX_H), Image.LANCZOS)
+
+    # Convert to base64 and submit
+    buf = io.BytesIO()
+    img_resized.save(buf, format="PNG")
+    img_b64 = base64.b64encode(buf.getvalue()).decode()
+
+    result_b64 = submit_compose(img_b64, DEFAULT_CLEAN_PROMPT, seed=seed,
+                                server_url=server_url)
+    if not result_b64:
+        return None
+
+    result_img = Image.open(io.BytesIO(base64.b64decode(result_b64))).convert("RGB")
+    if result_img.size != (FLUX_W, FLUX_H):
+        result_img = result_img.resize((FLUX_W, FLUX_H), Image.LANCZOS)
+
+    # Save clean (fully generated)
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    clean_path = CACHE_DIR / f"{card_id}_clean.png"
+    result_img.save(clean_path)
+    print(f"  Saved: {clean_path.name}")
+
+    # Save composite (original top + generated bottom)
+    top_px = int(FLUX_H * mask_top)
+    composite = img_resized.copy()
+    composite.paste(result_img.crop((0, top_px, FLUX_W, FLUX_H)), (0, top_px))
+    composite_path = CACHE_DIR / f"{card_id}_composite.png"
+    composite.save(composite_path)
+    print(f"  Saved: {composite_path.name}")
+
+    return CACHE_DIR / f"{card_id}{suffix}.png"
 
 
 def crop_artwork(image_data: bytes) -> str:
@@ -509,7 +635,8 @@ def is_fullart(card: dict) -> bool:
 
 
 def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.7,
-                         font_size: int = None, max_cover: float = 0.55) -> str:
+                         font_size: int = None, max_cover: float = 0.55,
+                         render_header: bool = False) -> str:
     """Generate an SVG proxy for a full-art card.
 
     Uses the full card image as background with a gradient overlay
@@ -633,7 +760,11 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
     lines.append(f'    <image x="0" y="0" width="{CARD_W}" height="{CARD_H}" preserveAspectRatio="xMidYMid slice"')
     lines.append(f'           href="data:image/png;base64,{image_b64}"/>')
 
-    # Bottom gradient overlay for text (no header overlay — keep the card's own header)
+    # Header overlay for clean images (AI-generated, no card text)
+    if render_header:
+        lines.append(f'    <rect x="0" y="0" width="{CARD_W}" height="120" fill="url(#header-grad)"/>')
+
+    # Bottom gradient overlay for text
     overlay_h = CARD_H - overlay_top
     lines.append(f'    <rect x="0" y="{overlay_top}" width="{CARD_W}" height="{overlay_h}" fill="url(#overlay-grad)"/>')
     lines.append(f'  </g>')
@@ -644,6 +775,39 @@ def generate_fullart_svg(card: dict, image_b64: str, overlay_opacity: float = 0.
 
     # Card border
     lines.append(f'  <rect width="{CARD_W}" height="{CARD_H}" rx="25" ry="25" fill="none" stroke="{color}" stroke-width="4"/>')
+
+    # Header text for clean images
+    if render_header:
+        lines.append(f'  <text x="30" y="57" font-family="{FONT_TITLE}" font-size="42" font-weight="900" fill="white" filter="url(#shadow-title)">{name}</text>')
+        if category == "Trainer":
+            icon_size = 40
+            icon_x = CARD_W - 30 - icon_size
+            icon_y = 20
+            icon_colors = {"Supporter": "#FFD040", "Stadium": "#50E878", "Item": "#60C8FF", "Tool": "#60C8FF"}
+            icon_fill = icon_colors.get(trainer_type, "#FFD040")
+            if trainer_type == "Supporter":
+                lines.append(f'  <g transform="translate({icon_x},{icon_y})">')
+                lines.append(f'    <circle cx="{icon_size//2}" cy="{int(icon_size*0.28)}" r="{int(icon_size*0.22)}" fill="{icon_fill}"/>')
+                lines.append(f'    <path d="M{int(icon_size*0.15)},{icon_size} Q{int(icon_size*0.15)},{int(icon_size*0.45)} {icon_size//2},{int(icon_size*0.42)} Q{int(icon_size*0.85)},{int(icon_size*0.45)} {int(icon_size*0.85)},{icon_size} Z" fill="{icon_fill}"/>')
+                lines.append(f'  </g>')
+            elif trainer_type in ("Item", "Tool"):
+                r = icon_size // 2
+                cx = icon_x + r
+                cy = icon_y + r
+                lines.append(f'  <circle cx="{cx}" cy="{cy}" r="{r}" fill="{icon_fill}" stroke="white" stroke-width="2"/>')
+                lines.append(f'  <rect x="{cx - r}" y="{cy - 2}" width="{icon_size}" height="4" fill="white"/>')
+                lines.append(f'  <circle cx="{cx}" cy="{cy}" r="{int(r*0.3)}" fill="white" stroke="{icon_fill}" stroke-width="2"/>')
+            elif trainer_type == "Stadium":
+                sx, sy, s = icon_x, icon_y, icon_size
+                lines.append(f'  <polygon points="{sx},{sy + int(s*0.4)} {sx + s//2},{sy + int(s*0.08)} {sx + s},{sy + int(s*0.4)}" fill="{icon_fill}"/>')
+                lines.append(f'  <rect x="{sx + int(s*0.05)}" y="{sy + int(s*0.82)}" width="{int(s*0.9)}" height="{int(s*0.12)}" rx="2" fill="{icon_fill}"/>')
+                cw, ch, ctop = int(s * 0.12), int(s * 0.44), sy + int(s * 0.38)
+                for col_x in [sx + int(s*0.15), sx + s//2 - cw//2, sx + int(s*0.85) - cw]:
+                    lines.append(f'    <rect x="{col_x}" y="{ctop}" width="{cw}" height="{ch}" rx="1" fill="{icon_fill}"/>')
+        elif hp:
+            # Pokemon: HP + type energy dot
+            hp_text = f'{hp} HP'
+            lines.append(f'  <text x="{CARD_W - 30}" y="57" font-family="{FONT_TITLE}" font-size="38" font-weight="900" fill="white" text-anchor="end" filter="url(#shadow-title)">{hp_text}</text>')
 
     # Text content starts below the overlay top + padding
     y = overlay_top + text_pad + int(BODY_SIZE * 0.5)
@@ -1147,6 +1311,8 @@ Options:
   --overlay N       Full-art overlay opacity, 0.0–1.0 (default: 0.7)
   --font N          Full-art body font size in px (default: auto 36/30)
   --max-cover N     Max fraction of card the overlay can cover (default: 0.55)
+  --clean MODE      Clean image mode: off, composite, clean (default: off)
+  --framehouse URL  Framehouse server URL (default: http://localhost:3000)
   -h, --help        Show this help message
 
 Output:
@@ -1161,19 +1327,25 @@ Decklist format:
 Per-card overrides (on the same line, before the # comment):
   overlay=0.4       Full-art overlay opacity (0.0–1.0)
   font=28           Force body font size in px
-  max_cover=0.6     Max fraction of card the overlay can cover""")
+  max_cover=0.6     Max fraction of card the overlay can cover
+  clean=composite   Clean mode per card (off, composite, clean)""")
         sys.exit(0)
 
     no_dupes = "--no-dupes" in args
     # Parse --key value flags
     defaults = {"overlay": 0.7, "font": None, "max_cover": 0.55}
     flag_map = {"--overlay": "overlay", "--font": "font", "--max-cover": "max_cover"}
+    str_flags = {}
+    str_flag_map = {"--clean": "clean", "--framehouse": "framehouse"}
     positional = []
     i = 0
     while i < len(args):
         if args[i] in flag_map and i + 1 < len(args):
             key = flag_map[args[i]]
             defaults[key] = float(args[i + 1])
+            i += 2
+        elif args[i] in str_flag_map and i + 1 < len(args):
+            str_flags[str_flag_map[args[i]]] = args[i + 1]
             i += 2
         elif args[i].startswith("-"):
             i += 1
@@ -1185,6 +1357,8 @@ Per-card overrides (on the same line, before the # comment):
     if default_font is not None:
         default_font = int(default_font)
     default_max_cover = defaults["max_cover"]
+    global_clean_mode = str_flags.get("clean", "off")
+    framehouse_url = str_flags.get("framehouse", FRAMEHOUSE_URL)
     args = positional
 
     decklist_path = args[0] if args else "decklist.txt"
@@ -1199,6 +1373,15 @@ Per-card overrides (on the same line, before the # comment):
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    # One-time framehouse check when cleaning is requested
+    framehouse_ok = False
+    if global_clean_mode != "off":
+        framehouse_ok = check_framehouse(framehouse_url)
+        if framehouse_ok:
+            print(f"Framehouse server OK at {framehouse_url}")
+        else:
+            print(f"Warning: framehouse not reachable at {framehouse_url} — will use cached/legacy images only")
+
     generated = 0
     print_cards = []  # (count, svg_content) for print.html
     for count, set_code, number, comment, overrides in entries:
@@ -1212,13 +1395,31 @@ Per-card overrides (on the same line, before the # comment):
             image_data = fetch_image(card["image"], card["id"])
             if is_fullart(card):
                 print(f"  Full-art detected ({card.get('rarity', 'unknown')})")
-                image_b64 = base64.b64encode(image_data).decode()
+                card_clean = overrides.get("clean", global_clean_mode)
+                if isinstance(card_clean, float):
+                    card_clean = "off"  # numeric override value, not a mode string
+                render_header = False
+                if card_clean != "off":
+                    cleaned = clean_card_image(
+                        card["id"], mode=card_clean,
+                        server_url=framehouse_url)
+                    if cleaned:
+                        print(f"  Using {card_clean} image: {cleaned.name}")
+                        bg_data = cleaned.read_bytes()
+                        render_header = (card_clean == "clean")
+                    else:
+                        bg_data = image_data
+                else:
+                    bg_data = image_data
+                image_b64 = base64.b64encode(bg_data).decode()
+
                 card_overlay = overrides.get("overlay", overlay_opacity)
                 card_font = overrides.get("font", default_font)
                 if card_font is not None:
                     card_font = int(card_font)
                 card_max_cover = overrides.get("max_cover", default_max_cover)
-                svg = generate_fullart_svg(card, image_b64, card_overlay, card_font, card_max_cover)
+                svg = generate_fullart_svg(card, image_b64, card_overlay, card_font,
+                                           card_max_cover, render_header=render_header)
             else:
                 artwork_b64 = crop_artwork(image_data)
                 svg = generate_svg(card, artwork_b64)

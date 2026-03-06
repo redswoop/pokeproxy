@@ -83,6 +83,7 @@ BBT 169 x1 overlay=0.4              # less dark overlay
 BBT 169 x1 font=28                  # smaller text
 BBT 169 x1 max_cover=0.6            # overlay can cover up to 60% of card
 BBT 169 x1 overlay=0.3 font=24      # combine multiple overrides
+BBT 169 x1 clean=composite          # use text-cleaned image for this card
 ```
 
 ## Usage
@@ -99,6 +100,13 @@ python pokeproxy.py --no-dupes decklist.txt
 
 # Adjust full-art overlay darkness (0.0 = transparent, 1.0 = opaque)
 python pokeproxy.py --overlay 0.4 decklist_gallery.txt
+
+# Use text-cleaned backgrounds for full-art cards
+python pokeproxy.py --clean composite decklist.txt   # original top + AI bottom
+python pokeproxy.py --clean clean decklist.txt       # fully AI-generated, renders header
+
+# Specify a different framehouse server
+python pokeproxy.py --clean composite --framehouse http://gpu-box:3000 decklist.txt
 ```
 
 ### Output
@@ -119,6 +127,19 @@ pip install Pillow freetype-py
 ```
 
 Requires macOS system fonts (Arial Black, Helvetica Neue) for text measurement via FreeType.
+
+## PokeCleaner Integration
+
+PokeProxy can use text-cleaned card images as backgrounds for full-art proxies, removing the visual conflict between original card text and proxy overlay text. Cleaning is powered by FLUX Klein 9B via the [framehouse](https://github.com/your/framehouse) server (ComfyUI + GPU).
+
+Two clean modes are available:
+
+- **`composite`** — keeps the original top 20% of the card (name, HP, type icons) and replaces the bottom 80% with AI-generated text-free artwork. No header rendering needed since the original header is preserved.
+- **`clean`** — fully AI-regenerated image with no card text at all. PokeProxy renders a header overlay with the card name, HP, and type icon on top of the clean image.
+
+Clean images are cached in `cache/` (as `{id}_clean.png` and `{id}_composite.png`). Legacy images from the standalone `../pokecleaner/output/` directory are also checked as a fallback. If framehouse is not reachable, PokeProxy falls back to the original card image.
+
+See `POKECLEANER.md` for details on the framehouse server, prompts, and standalone usage.
 
 ## Other Scripts
 
